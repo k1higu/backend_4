@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.name }}{% endblock title %}
+{% block header %}{{ post.name }}{% endblock header %}
+
+{% block content %}
+
+{% if post.featured_image %}
+<img src="{{ post.featured_image.url}}" alt="">
+{% endif %}
+
+<h2>{{ post.name }}</h2>
+<p>{{ post.description }}</p>
+
+<hr>
+
+
+#{% if user.is_authenticated and post.author == user %}
+<div class="d-flex gap-1">
+<a class="btn btn-success" href="{% url 'post_edit' post.slug %}"> Редактировать</a>
+<a class="btn btn-danger" href="{% url 'post_delete' post.slug %}"> Удалить</a>
+</div>
+
+#{% endif %}
+
+<hr>
+<div class="comments">
+    <h2>Комментарии:</h2>
+    {% for comment in post.comments.all %}
+        <p><strong>{{ comment.author }}:</strong> {{ comment.body | safe}}</p>
+    {% empty %}
+        <p>Комментариев пока нет.</p>
+    {% endfor %}
+</div>
+
+<hr>
+<h2>Оставить комментарий:</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ comment_form.media }}
+    {{ comment_form.as_p }}
+    <!-- {{ form.description | safe }}
+    {{ form.media }} -->
+
+    
+    <button type="submit">Отправить</button>
+</form>
+
+
+{% endblock content %}
